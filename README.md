@@ -24,7 +24,11 @@ Technical details, architecture, development notes, and deeper documentation wil
 
 ## Contributing
 
-Adrax is , and contributions are welcome. The project is intended to grow through collaboration, experimentation, and community feedback.
+Adrax is a proprietary project. Contributions are currently accepted by invitation only.
+
+If you are interested in contributing to Adrax, please contact the project maintainers before submitting code, documentation, or other materials.
+
+Any contribution must be authorized and may be subject to a separate agreement defining the rights, ownership, and terms applicable to the contribution.
 
 ## License
 

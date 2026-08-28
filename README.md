@@ -1,13 +1,12 @@
 # Adrax
 
-[![License](https://img.shields.io/github/license/kallew-dev/Adrax)](LICENSE)
 [![Version](https://img.shields.io/badge/version-0.1.0-blue)](https://github.com/kallew-dev/Adrax)
 [![Rust](https://img.shields.io/badge/Rust-1.97-orange?logo=rust)](https://www.rust-lang.org/)
 [![GitHub Stars](https://img.shields.io/github/stars/kallew-dev/Adrax)](https://github.com/kallew-dev/Adrax)
 [![GitHub Issues](https://img.shields.io/github/issues/kallew-dev/Adrax)](https://github.com/kallew-dev/Adrax/issues)
 ---
 
-**Adrax** is an open-source Android device management tool built in Rust around the Android Debug Bridge (ADB).
+**Adrax** is an proprietary Android device management tool built in Rust around the Android Debug Bridge (ADB).
 
 Its purpose is to provide a simpler and more intuitive way to interact with Android devices without requiring users to work directly with the ADB command-line interface. Adrax abstracts common ADB operations into a unified interface while keeping the flexibility and power of ADB underneath.
 
@@ -25,9 +24,10 @@ Technical details, architecture, development notes, and deeper documentation wil
 
 ## Contributing
 
-Adrax is open source, and contributions are welcome. The project is intended to grow through collaboration, experimentation, and community feedback.
+Adrax is , and contributions are welcome. The project is intended to grow through collaboration, experimentation, and community feedback.
 
 ## License
 
-Adrax is released under the MIT License.
+Adrax is proprietary software. All rights reserved.
 
+Use, modification, distribution, or commercial exploitation of the source code requires explicit permission from the copyright holder.

@@ -524,7 +524,7 @@ a {
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 13px;
   margin-top: 13px;
 }
@@ -574,16 +574,6 @@ a {
 .stat-icon.green {
   color: var(--green);
   background: rgba(80, 250, 123, .11);
-}
-
-.stat-icon.cyan {
-  color: var(--cyan);
-  background: rgba(34, 211, 238, .11);
-}
-
-.stat-icon.purple {
-  color: #b692ff;
-  background: rgba(139, 92, 246, .12);
 }
 
 .stat-icon.yellow {
@@ -1159,6 +1149,19 @@ td strong {
 /* =========================
    RESPONSIVE
    ========================= */
+@media (max-width: 900px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 680px) {
+  .stats-grid,
+  .main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 
 @media (max-width: 1250px) {
   .topbar {

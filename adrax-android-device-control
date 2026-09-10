@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ADRAX — Android Device Control">
+  <title>ADRAX — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- O checkbox controla visualmente o tema sem JavaScript nesta primeira versão -->
+  <input type="checkbox" id="theme-toggle" class="theme-toggle">
+
+  <div class="app-shell">
+
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">⌁</div>
+        <div>
+          <strong>ADRAX</strong>
+          <span>Android Device Control</span>
+        </div>
+      </div>
+
+      <nav class="main-nav" aria-label="Navegação principal">
+        <a class="nav-item active" href="#">
+          <span class="nav-icon">▦</span>
+          <span>Dashboard</span>
+        </a>
+        <a class="nav-item" href="#">
+          <span class="nav-icon">▯</span>
+          <span>Dispositivos</span>
+        </a>
+        <a class="nav-item" href="#">
+          <span class="nav-icon">⊞</span>
+          <span>Aplicativos</span>
+        </a>
+        <a class="nav-item" href="#">
+          <span class="nav-icon">□</span>
+          <span>Arquivos</span>
+        </a>
+        <a class="nav-item" href="#">
+          <span class="nav-icon">›_</span>
+          <span>Comandos</span>
+        </a>
+        <a class="nav-item" href="#">
+          <span class="nav-icon">⚙</span>
+          <span>Automações</span>
+        </a>
+        <a class="nav-item" href="#">
+          <span class="nav-icon">▥</span>
+          <span>Relatórios</span>
+        </a>
+        <a class="nav-item" href="#">
+          <span class="nav-icon">◉</span>
+          <span>Configurações</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="system-card">
+          <span class="status-dot"></span>
+          <div>
+            <strong>Sistema operacional</strong>
+            <small>Todos os serviços ativos</small>
+          </div>
+          <span class="arrow">›</span>
+        </div>
+        <div class="version">ADRAX v1.0.0</div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+
+      <header class="topbar">
+        <div class="topbar-title">
+          <button class="mobile-menu" aria-label="Abrir menu">☰</button>
+          <h1>Dashboard</h1>
+        </div>
+
+        <div class="topbar-actions">
+          <button class="device-selector">
+            <span class="phone-icon">▯</span>
+            <span class="device-name">
+              <strong>Samsung Galaxy S21 Ultra</strong>
+              <small>SM-G998B</small>
+            </span>
+            <span>⌄</span>
+          </button>
+
+          <div class="connection usb">
+            <span>♆</span> USB <i></i>
+          </div>
+          <div class="connection wifi">
+            <span>⌁</span> Wi-Fi <i></i>
+          </div>
+
+          <label class="theme-switch" for="theme-toggle" title="Alternar tema">
+            <span class="sun">☀</span>
+            <span class="switch-track"><span></span></span>
+            <span class="moon">☾</span>
+          </label>
+
+          <div class="search">
+            <span>⌕</span>
+            <input type="search" placeholder="Buscar dispositivos, apps, arquivos...">
+          </div>
+
+          <button class="icon-button notification" aria-label="Notificações">♧<span></span></button>
+          <button class="avatar">A</button>
+        </div>
+      </header>
+
+      <div class="content">
+
+        <div class="tabs">
+          <a class="tab active" href="#">Visão geral</a>
+          <a class="tab" href="#">Dispositivos</a>
+          <a class="tab" href="#">Ações rápidas</a>
+          <a class="tab" href="#">Atividade</a>
+        </div>
+
+        <section class="stats-grid">
+          <article class="stat-card">
+            <div class="stat-icon green">▯</div>
+            <div class="stat-value">12</div>
+            <div class="stat-label">Dispositivos online</div>
+            <div class="stat-change positive">↑ 2 desde ontem</div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-icon cyan">◉</div>
+            <div class="stat-value">48</div>
+            <div class="stat-label">Capturas hoje</div>
+            <div class="stat-change positive">↑ 15% vs ontem</div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-icon purple">›_</div>
+            <div class="stat-value">126</div>
+            <div class="stat-label">Comandos executados</div>
+            <div class="stat-change positive">↑ 8% vs ontem</div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-icon yellow">♙</div>
+            <div class="stat-value">6</div>
+            <div class="stat-label">Automações ativas</div>
+            <div class="stat-change positive">↑ 1 novas hoje</div>
+          </article>
+        </section>
+
+        <section class="main-grid">
+
+          <article class="panel device-overview">
+            <div class="panel-header">
+              <div>
+                <span class="eyebrow">DISPOSITIVO SELECIONADO</span>
+                <h2>Samsung Galaxy S21 Ultra</h2>
+                <p>SM-G998B · Conectado via USB</p>
+              </div>
+              <button class="more-button">⋮</button>
+            </div>
+
+            <div class="device-info">
+              <div class="phone-preview">
+                <div class="phone-frame">
+                  <div class="camera"></div>
+                  <div class="phone-screen">
+                    <div class="wallpaper">
+                      <div class="wallpaper-orb orb-one"></div>
+                      <div class="wallpaper-orb orb-two"></div>
+                      <div class="screen-time">10:42</div>
+                      <div class="screen-date">Ter, 09 de Setembro</div>
+                      <div class="screen-apps">
+                        <span>☎</span><span>●</span><span>◉</span><span>▣</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="device-specs">
+                <div class="device-heading">
+                  <div class="online-badge"><i></i> Conectado</div>
+                </div>
+
+                <div class="spec-list">
+                  <div><span>◈ Android</span><strong>13 (Tiramisu)</strong></div>
+                  <div><span>▰ Bateria</span><strong>87%</strong></div>
+                  <div><span>◉ CPU</span><strong>Snapdragon 888</strong></div>
+                  <div><span>▤ Memória</span><strong>12 GB RAM</strong></div>
+                  <div><span>▣ Resolução</span><strong>3200 × 1440</strong></div>
+                  <div><span>◷ Tempo ativo</span><strong>2d 14h 32m</strong></div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel quick-actions">
+            <div class="panel-title-row">
+              <div>
+                <span class="eyebrow">CONTROLE</span>
+                <h2>Ações rápidas</h2>
+              </div>
+              <button class="panel-link">Ver todas</button>
+            </div>
+
+            <div class="action-grid">
+              <button class="action-card">
+                <span class="action-icon">♙</span>
+                <strong>Bloquear</strong>
+                <small>Bloquear dispositivo</small>
+              </button>
+              <button class="action-card">
+                <span class="action-icon">◉</span>
+                <strong>Captura de tela</strong>
+                <small>Salvar screenshot</small>
+              </button>
+              <button class="action-card">
+                <span class="action-icon">⇩</span>
+                <strong>Instalar APK</strong>
+                <small>Enviar aplicativo</small>
+              </button>
+              <button class="action-card">
+                <span class="action-icon">▭</span>
+                <strong>Abrir Scrcpy</strong>
+                <small>Espelhar dispositivo</small>
+              </button>
+            </div>
+          </article>
+
+          <article class="panel live-preview">
+            <div class="panel-title-row">
+              <div>
+                <span class="eyebrow">MONITORAMENTO</span>
+                <h2>Pré-visualização</h2>
+              </div>
+              <span class="live-badge"><i></i> Ao vivo</span>
+            </div>
+
+            <div class="preview-content">
+              <div class="mini-phone">
+                <div class="mini-notch"></div>
+                <div class="mini-screen">
+                  <div class="mini-time">10:42</div>
+                  <div class="mini-weather">☀ 27°</div>
+                  <div class="mini-wall"></div>
+                  <div class="mini-dock"><span>☎</span><span>●</span><span>◉</span><span>▣</span></div>
+                </div>
+              </div>
+
+              <div class="preview-specs">
+                <div><span>▣ Tela</span><strong>Ligada</strong></div>
+                <div><span>◫ Resolução</span><strong>3200 × 1440</strong></div>
+                <div><span>◉ Orientação</span><strong>Retrato</strong></div>
+                <div><span>⌗ DPI</span><strong>515</strong></div>
+                <div><span>◷ Taxa de atualização</span><strong>120 Hz</strong></div>
+                <button>⛶ Tela cheia</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel devices-table">
+            <div class="panel-title-row">
+              <div>
+                <span class="eyebrow">GERENCIAMENTO</span>
+                <h2>Dispositivos recentes</h2>
+              </div>
+              <button class="panel-link">Ver todos →</button>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Dispositivo</th>
+                    <th>Modelo</th>
+                    <th>Status</th>
+                    <th>Conexão</th>
+                    <th>Última atividade</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="table-phone">▯</span><strong>Samsung Galaxy S21 Ultra</strong></td>
+                    <td>SM-G998B</td>
+                    <td><span class="status online">● Online</span></td>
+                    <td>♆ USB</td>
+                    <td>Agora há pouco</td>
+                    <td>⋮</td>
+                  </tr>
+                  <tr>
+                    <td><span class="table-phone">▯</span><strong>Xiaomi 12</strong></td>
+                    <td>2201123G</td>
+                    <td><span class="status online">● Online</span></td>
+                    <td>⌁ Wi-Fi</td>
+                    <td>2 min atrás</td>
+                    <td>⋮</td>
+                  </tr>
+                  <tr>
+                    <td><span class="table-phone">▯</span><strong>Motorola Edge 30</strong></td>
+                    <td>XT2203-1</td>
+                    <td><span class="status offline">● Offline</span></td>
+                    <td>—</td>
+                    <td>1h atrás</td>
+                    <td>⋮</td>
+                  </tr>
+                  <tr>
+                    <td><span class="table-phone">▯</span><strong>OnePlus 9 Pro</strong></td>
+                    <td>LE2123</td>
+                    <td><span class="status offline">● Offline</span></td>
+                    <td>—</td>
+                    <td>3h atrás</td>
+                    <td>⋮</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="panel activity">
+            <div class="panel-title-row">
+              <div>
+                <span class="eyebrow">LOG DO SISTEMA</span>
+                <h2>Atividade recente</h2>
+              </div>
+              <button class="panel-link">Ver tudo →</button>
+            </div>
+
+            <div class="timeline">
+              <div class="timeline-item">
+                <span class="timeline-icon success">✓</span>
+                <div><strong>Captura de tela realizada</strong><small>Samsung Galaxy S21 Ultra</small></div>
+                <time>Agora há pouco</time>
+              </div>
+              <div class="timeline-item">
+                <span class="timeline-icon command">›_</span>
+                <div><strong>Comando executado</strong><small>adb shell pm list packages</small></div>
+                <time>2 min atrás</time>
+              </div>
+              <div class="timeline-item">
+                <span class="timeline-icon install">⇩</span>
+                <div><strong>APK instalado</strong><small>com.whatsapp</small></div>
+                <time>5 min atrás</time>
+              </div>
+              <div class="timeline-item">
+                <span class="timeline-icon lock">♙</span>
+                <div><strong>Dispositivo bloqueado</strong><small>Samsung Galaxy S21 Ultra</small></div>
+                <time>12 min atrás</time>
+              </div>
+            </div>
+          </article>
+
+        </section>
+      </div>
+    </main>
+  </div>
+
+</body>
+</html>

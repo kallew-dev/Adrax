@@ -13,7 +13,6 @@
 <body>
   <script src="https://unpkg.com/htmx.org@2.0.6"></script>
 
-  <!-- O checkbox controla visualmente o tema sem JavaScript nesta primeira versão -->
   <input type="checkbox" id="theme-toggle" class="theme-toggle">
 
   <div class="app-shell">
@@ -196,55 +195,55 @@
               <button class="panel-link">Ver todas</button>
             </div>
 
-        <div class="action-grid">
+            <div class="action-grid">
 
-          <button
-            id="action-lock"
-            class="action-card"
-            hx-target="#action-status"
-            hx-swap="innerHTML"
-          >
-            <span class="action-icon">♙</span>
-            <strong>Bloquear</strong>
-            <small>Bloquear dispositivo</small>
-          </button>
+              <button
+                id="action-lock"
+                class="action-card"
+                hx-target="#action-status"
+                hx-swap="innerHTML"
+              >
+                <span class="action-icon">♙</span>
+                <strong>Bloquear</strong>
+                <small>Bloquear dispositivo</small>
+              </button>
 
-          <button
-            id="action-unlock"
-            class="action-card"
-            hx-target="#action-status"
-            hx-swap="innerHTML"
-          >
-            <span class="action-icon">◉</span>
-            <strong>Desbloquear</strong>
-            <small>Desbloquear dispositivo</small>
-          </button>
+              <button
+                id="action-unlock"
+                class="action-card"
+                hx-target="#action-status"
+                hx-swap="innerHTML"
+              >
+                <span class="action-icon">◉</span>
+                <strong>Desbloquear</strong>
+                <small>Desbloquear dispositivo</small>
+              </button>
 
-          <button
-            id="action-volume-down"
-            class="action-card"
-            hx-target="#action-status"
-            hx-swap="innerHTML"
-          >
-            <span class="action-icon">🔉</span>
-            <strong>Volume Down</strong>
-            <small>Diminuir volume</small>
-          </button>
+              <button
+                id="action-volume-down"
+                class="action-card"
+                hx-target="#action-status"
+                hx-swap="innerHTML"
+              >
+                <span class="action-icon">🔉</span>
+                <strong>Diminuir volume</strong>
+                <small>Diminuir volume do dispositivo</small>
+              </button>
 
-          <button
-            id="action-volume-up"
-            class="action-card"
-            hx-target="#action-status"
-            hx-swap="innerHTML"
-          >
-            <span class="action-icon">🔊</span>
-            <strong>Volume Up</strong>
-            <small>Aumentar volume</small>
-          </button>
+              <button
+                id="action-volume-up"
+                class="action-card"
+                hx-target="#action-status"
+                hx-swap="innerHTML"
+              >
+                <span class="action-icon">🔊</span>
+                <strong>Aumentar volume</strong>
+                <small>Aumentar volume do dispositivo</small>
+              </button>
 
-        </div>
+            </div>
 
-        <div id="action-status"></div>
+            <div id="action-status"></div>
           </article>
 
           <article class="panel live-preview">

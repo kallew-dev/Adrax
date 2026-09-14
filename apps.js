@@ -75,7 +75,7 @@ function renderApps(payload) {
     const appName = getAppName(packageName);
 
     return `
-      <article class="app-card">
+      <article class="app-card" data-package="${escapeHtml(packageName)}" tabindex="0" role="button" aria-label="Abrir ${escapeHtml(appName)}">
         <span class="app-icon">⊞</span>
         <div class="app-info">
           <strong>${escapeHtml(appName)}</strong>
@@ -84,6 +84,37 @@ function renderApps(payload) {
       </article>
     `;
   }).join("");
+}
+
+async function launchApp(packageName) {
+  const deviceId = deviceSelect.value;
+
+  if (!deviceId || !packageName) {
+    return;
+  }
+
+  const appCard = [...appsList.querySelectorAll(".app-card")]
+    .find((card) => card.dataset.package === packageName);
+
+  if (appCard) {
+    appCard.classList.add("is-launching");
+  }
+
+  try {
+    const response = await fetch(
+      `${API_URL}/api/v1/devices/${encodeURIComponent(deviceId)}/apps/${encodeURIComponent(packageName)}/launch`,
+      { method: "POST" },
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+  } catch (error) {
+    console.error("Failed to launch application:", error);
+    window.alert("Não foi possível abrir o aplicativo.");
+  } finally {
+    appCard?.classList.remove("is-launching");
+  }
 }
 
 async function loadDevices() {
@@ -145,6 +176,27 @@ async function loadApps(deviceId) {
 
 deviceSelect.addEventListener("change", () => {
   loadApps(deviceSelect.value);
+});
+
+appsList.addEventListener("click", (event) => {
+  const card = event.target.closest(".app-card");
+
+  if (card?.dataset.package) {
+    launchApp(card.dataset.package);
+  }
+});
+
+appsList.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" && event.key !== " ") {
+    return;
+  }
+
+  const card = event.target.closest(".app-card");
+
+  if (card?.dataset.package) {
+    event.preventDefault();
+    launchApp(card.dataset.package);
+  }
 });
 
 refreshButton.addEventListener("click", async () => {

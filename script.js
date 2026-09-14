@@ -115,8 +115,6 @@ function setupDeviceNavigation() {
         return;
     }
 
-    devicesPanel.id = "devices";
-
     const showDevices = (event) => {
         event?.preventDefault();
         devicesPanel.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -135,6 +133,12 @@ function setupDeviceNavigation() {
 
 function renderDeviceTable(devices) {
     const table = document.querySelector(".devices-table tbody");
+    const count = document.getElementById("devices-count");
+
+    if (count) {
+        count.textContent = String(devices.length);
+    }
+
     if (!table) {
         return;
     }
@@ -157,7 +161,6 @@ function renderDeviceTable(devices) {
         const name = device.name ?? deviceId;
         const android = device.android_version ?? "Desconhecido";
         const battery = Number(device.battery_level ?? 0);
-        const uptime = formatUptime(device.uptime_seconds);
 
         const row = document.createElement("tr");
         row.innerHTML = `
@@ -165,7 +168,7 @@ function renderDeviceTable(devices) {
             <td>${escapeHtml(deviceId)}</td>
             <td><span class="status online">● Online</span></td>
             <td>♆ Conectado</td>
-            <td>${escapeHtml(uptime)} atrás</td>
+            <td>Online agora</td>
             <td><button class="device-row-menu" type="button" aria-label="Ações de ${escapeHtml(name)}">⋮</button></td>
         `;
 
@@ -207,18 +210,20 @@ async function loadConnectedDevices() {
     } catch (error) {
         console.error("Failed to load devices:", error);
 
+        const count = document.getElementById("devices-count");
         const table = document.querySelector(".devices-table tbody");
+
+        if (count) {
+            count.textContent = "0";
+        }
+
         if (table) {
             table.innerHTML = `<tr><td colspan="6" class="devices-empty">Não foi possível carregar os dispositivos.</td></tr>`;
         }
     }
 }
 
-async function loadConnectedDevice() {
-    await loadConnectedDevices();
-}
-
 document.addEventListener("DOMContentLoaded", () => {
     setupDeviceNavigation();
-    loadConnectedDevice();
+    loadConnectedDevices();
 });

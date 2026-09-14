@@ -1,4 +1,5 @@
 const API_URL = "https://adrax.onrender.com";
+const DEVICES_CACHE_KEY = "adrax:connected-devices";
 
 function updateDeviceActions(deviceId) {
     if (!deviceId) {
@@ -187,9 +188,47 @@ function escapeHtml(value) {
         .replaceAll("'", "&#039;");
 }
 
-async function loadConnectedDevices() {
+function readCachedDevices() {
     try {
-        const response = await fetch(`${API_URL}/api/v1/devices`);
+        const cached = localStorage.getItem(DEVICES_CACHE_KEY);
+        if (!cached) {
+            return null;
+        }
+
+        const devices = JSON.parse(cached);
+        return Array.isArray(devices) ? devices : null;
+    } catch (error) {
+        console.warn("Failed to read cached devices:", error);
+        return null;
+    }
+}
+
+function cacheDevices(devices) {
+    try {
+        localStorage.setItem(DEVICES_CACHE_KEY, JSON.stringify(devices));
+    } catch (error) {
+        console.warn("Failed to cache devices:", error);
+    }
+}
+
+function renderCachedDevices() {
+    const devices = readCachedDevices();
+    if (!devices || devices.length === 0) {
+        return false;
+    }
+
+    renderDeviceTable(devices);
+    updateDashboardDevice(devices[0]);
+    return true;
+}
+
+async function loadConnectedDevices() {
+    const hasCachedDevices = renderCachedDevices();
+
+    try {
+        const response = await fetch(`${API_URL}/api/v1/devices`, {
+            cache: "no-store",
+        });
 
         if (!response.ok) {
             throw new Error(`Failed to load devices: HTTP ${response.status}`);
@@ -202,6 +241,7 @@ async function loadConnectedDevices() {
             throw new Error("Invalid devices response from API");
         }
 
+        cacheDevices(devices);
         renderDeviceTable(devices);
 
         if (devices.length > 0) {
@@ -209,6 +249,10 @@ async function loadConnectedDevices() {
         }
     } catch (error) {
         console.error("Failed to load devices:", error);
+
+        if (hasCachedDevices) {
+            return;
+        }
 
         const count = document.getElementById("devices-count");
         const table = document.querySelector(".devices-table tbody");

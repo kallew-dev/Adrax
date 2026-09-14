@@ -7,10 +7,10 @@ function updateDeviceActions(deviceId) {
     }
 
     const actions = {
-        "action-lock": `${API_URL}/api/v1/devices/${deviceId}/lock`,
-        "action-unlock": `${API_URL}/api/v1/devices/${deviceId}/unlock`,
-        "action-volume-down": `${API_URL}/api/v1/devices/${deviceId}/volume/down`,
-        "action-volume-up": `${API_URL}/api/v1/devices/${deviceId}/volume/up`,
+        "action-lock": `${API_URL}/api/v1/devices/${encodeURIComponent(deviceId)}/lock`,
+        "action-unlock": `${API_URL}/api/v1/devices/${encodeURIComponent(deviceId)}/unlock`,
+        "action-volume-down": `${API_URL}/api/v1/devices/${encodeURIComponent(deviceId)}/volume/down`,
+        "action-volume-up": `${API_URL}/api/v1/devices/${encodeURIComponent(deviceId)}/volume/up`,
     };
 
     Object.entries(actions).forEach(([id, url]) => {
@@ -49,8 +49,12 @@ function setText(element, value) {
     }
 }
 
+function getDeviceId(device) {
+    return device.device_id ?? device.id ?? device.serial;
+}
+
 function updateDashboardDevice(device) {
-    const deviceId = device.device_id ?? device.id ?? device.serial;
+    const deviceId = getDeviceId(device);
 
     if (!deviceId) {
         throw new Error("Device returned by the API has no device_id");
@@ -93,7 +97,94 @@ function updateDashboardDevice(device) {
     updateDeviceActions(deviceId);
 }
 
-async function loadConnectedDevice() {
+function setActiveNavItem(target) {
+    document.querySelectorAll(".main-nav .nav-item").forEach((item) => {
+        item.classList.toggle("active", item === target);
+    });
+}
+
+function setupDeviceNavigation() {
+    const deviceNav = [...document.querySelectorAll(".main-nav .nav-item")]
+        .find((item) => item.textContent.trim() === "Dispositivos");
+    const dashboardNav = [...document.querySelectorAll(".main-nav .nav-item")]
+        .find((item) => item.textContent.trim() === "Dashboard");
+    const devicesPanel = document.querySelector(".devices-table");
+    const viewAll = document.querySelector(".devices-table .panel-link");
+
+    if (!devicesPanel) {
+        return;
+    }
+
+    devicesPanel.id = "devices";
+
+    const showDevices = (event) => {
+        event?.preventDefault();
+        devicesPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+        setActiveNavItem(deviceNav);
+    };
+
+    deviceNav?.addEventListener("click", showDevices);
+    viewAll?.addEventListener("click", showDevices);
+
+    dashboardNav?.addEventListener("click", (event) => {
+        event.preventDefault();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        setActiveNavItem(dashboardNav);
+    });
+}
+
+function renderDeviceTable(devices) {
+    const table = document.querySelector(".devices-table tbody");
+    if (!table) {
+        return;
+    }
+
+    table.replaceChildren();
+
+    if (devices.length === 0) {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td colspan="6" class="devices-empty">Nenhum dispositivo conectado.</td>`;
+        table.appendChild(row);
+        return;
+    }
+
+    devices.forEach((device) => {
+        const deviceId = getDeviceId(device);
+        if (!deviceId) {
+            return;
+        }
+
+        const name = device.name ?? deviceId;
+        const android = device.android_version ?? "Desconhecido";
+        const battery = Number(device.battery_level ?? 0);
+        const uptime = formatUptime(device.uptime_seconds);
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td><span class="table-phone">▯</span><strong>${escapeHtml(name)}</strong></td>
+            <td>${escapeHtml(deviceId)}</td>
+            <td><span class="status online">● Online</span></td>
+            <td>♆ Conectado</td>
+            <td>${escapeHtml(uptime)} atrás</td>
+            <td><button class="device-row-menu" type="button" aria-label="Ações de ${escapeHtml(name)}">⋮</button></td>
+        `;
+
+        row.dataset.deviceId = deviceId;
+        row.title = `${name} · Android ${android} · Bateria ${battery}%`;
+        table.appendChild(row);
+    });
+}
+
+function escapeHtml(value) {
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+async function loadConnectedDevices() {
     try {
         const response = await fetch(`${API_URL}/api/v1/devices`);
 
@@ -104,14 +195,30 @@ async function loadConnectedDevice() {
         const payload = await response.json();
         const devices = Array.isArray(payload) ? payload : payload.devices;
 
-        if (!Array.isArray(devices) || devices.length === 0) {
-            throw new Error("No devices returned by the API");
+        if (!Array.isArray(devices)) {
+            throw new Error("Invalid devices response from API");
         }
 
-        updateDashboardDevice(devices[0]);
+        renderDeviceTable(devices);
+
+        if (devices.length > 0) {
+            updateDashboardDevice(devices[0]);
+        }
     } catch (error) {
-        console.error("Failed to load dashboard device:", error);
+        console.error("Failed to load devices:", error);
+
+        const table = document.querySelector(".devices-table tbody");
+        if (table) {
+            table.innerHTML = `<tr><td colspan="6" class="devices-empty">Não foi possível carregar os dispositivos.</td></tr>`;
+        }
     }
 }
 
-document.addEventListener("DOMContentLoaded", loadConnectedDevice);
+async function loadConnectedDevice() {
+    await loadConnectedDevices();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    setupDeviceNavigation();
+    loadConnectedDevice();
+});

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ADRAX — Aplicativos instalados em dispositivos Android">
+  <title>ADRAX — Aplicativos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="apps.css?v=1">
+</head>
+<body>
+  <input type="checkbox" id="theme-toggle" class="theme-toggle">
+
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">⌁</div>
+        <div><strong>ADRAX</strong><span>Android Device Control</span></div>
+      </div>
+
+      <nav class="main-nav" aria-label="Navegação principal">
+        <a class="nav-item" href="index.html"><span class="nav-icon">▦</span><span>Dashboard</span></a>
+        <a class="nav-item" href="#"><span class="nav-icon">▯</span><span>Dispositivos</span></a>
+        <a class="nav-item active" href="apps.html"><span class="nav-icon">⊞</span><span>Aplicativos</span></a>
+        <a class="nav-item" href="#"><span class="nav-icon">□</span><span>Arquivos</span></a>
+        <a class="nav-item" href="actions.html"><span class="nav-icon">›_</span><span>Ações</span></a>
+        <a class="nav-item" href="#"><span class="nav-icon">⚙</span><span>Automações</span></a>
+        <a class="nav-item" href="#"><span class="nav-icon">▥</span><span>Relatórios</span></a>
+        <a class="nav-item" href="#"><span class="nav-icon">◉</span><span>Configurações</span></a>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="system-card"><span class="status-dot"></span><div><strong>Sistema operacional</strong><small>Todos os serviços ativos</small></div><span class="arrow">›</span></div>
+        <div class="version">ADRAX v1.0.0</div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="topbar-title">
+          <button class="mobile-menu" aria-label="Abrir menu">☰</button>
+          <div><h1>Aplicativos</h1><p class="page-subtitle">Aplicativos disponíveis no dispositivo selecionado.</p></div>
+        </div>
+        <div class="topbar-actions">
+          <label class="theme-switch" for="theme-toggle" title="Alternar tema"><span class="sun">☀</span><span class="switch-track"><span></span></span><span class="moon">☾</span></label>
+          <button class="avatar">A</button>
+        </div>
+      </header>
+
+      <div class="content apps-content">
+        <section class="apps-header panel">
+          <div>
+            <span class="eyebrow">GERENCIAMENTO</span>
+            <h2>Aplicativos instalados</h2>
+            <p>Selecione um dispositivo para consultar os aplicativos disponíveis.</p>
+          </div>
+          <div class="apps-controls">
+            <label for="device-select">Dispositivo</label>
+            <select id="device-select" aria-label="Selecionar dispositivo">
+              <option value="">Carregando dispositivos...</option>
+            </select>
+            <button id="refresh-apps" class="outline-button" type="button">↻ Atualizar</button>
+          </div>
+        </section>
+
+        <section class="apps-summary">
+          <div class="apps-count-card">
+            <span class="apps-count-icon">⊞</span>
+            <div><span>APLICATIVOS</span><strong id="apps-count">0</strong></div>
+          </div>
+          <div id="apps-device-name" class="apps-device-status">Nenhum dispositivo selecionado</div>
+        </section>
+
+        <section class="panel apps-panel">
+          <div class="panel-title-row">
+            <div><span class="eyebrow">DISPOSITIVOS</span><h2>Aplicativos</h2></div>
+          </div>
+          <div id="apps-list" class="apps-list">
+            <div class="empty-state"><span>⊞</span><strong>Nenhum aplicativo carregado</strong><small>Selecione um dispositivo para consultar a API.</small></div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script src="apps.js?v=1"></script>
+</body>
+</html>

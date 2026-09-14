@@ -17,49 +17,56 @@ class ScreenPreview {
         this.frames = 0;
         this.lastFpsAt = performance.now();
         this.deviceId = null;
+        this.starting = false;
 
         this.fullscreen?.addEventListener("click", () => this.toggleFullscreen());
         document.addEventListener("fullscreenchange", () => this.syncFullscreenState());
     }
 
     setDevice(deviceId) {
-        if (!deviceId || deviceId === this.deviceId) {
-            return;
-        }
-
-        this.deviceId = deviceId;
+        if (!deviceId || deviceId === this.deviceId) return;
         this.stop();
+        this.deviceId = deviceId;
         this.connect();
     }
 
-    connect() {
-        if (!this.deviceId) {
-            return;
-        }
+    async connect() {
+        if (!this.deviceId || this.starting) return;
 
+        this.starting = true;
         this.setStatus("Conectando");
-        const url = `${SCREEN_STREAM_URL}/${encodeURIComponent(this.deviceId)}/screen/stream`;
-        this.socket = new WebSocket(url);
-        this.socket.binaryType = "arraybuffer";
-        this.socket.addEventListener("message", (event) => this.handleMessage(event.data));
-        this.socket.addEventListener("close", () => {
-            this.setStatus("Offline");
-            this.root.classList.remove("is-streaming");
-        });
-        this.socket.addEventListener("error", () => this.setStatus("Indisponível"));
+
+        try {
+            const start = await fetch(`${SCREEN_STREAM_URL}/${encodeURIComponent(this.deviceId)}/screen/start`, {
+                method: "POST",
+            });
+
+            if (!start.ok) {
+                throw new Error(`screen/start failed: HTTP ${start.status}`);
+            }
+
+            const url = `${SCREEN_STREAM_URL}/${encodeURIComponent(this.deviceId)}/screen/stream`;
+            this.socket = new WebSocket(url);
+            this.socket.binaryType = "arraybuffer";
+            this.socket.addEventListener("message", (event) => this.handleMessage(event.data));
+            this.socket.addEventListener("close", () => {
+                this.setStatus("Offline");
+                this.root.classList.remove("is-streaming");
+            });
+            this.socket.addEventListener("error", () => this.setStatus("Indisponível"));
+        } catch (error) {
+            console.error("Failed to start screen stream:", error);
+            this.setStatus("Indisponível");
+        } finally {
+            this.starting = false;
+        }
     }
 
     handleMessage(data) {
         const bytes = new Uint8Array(data);
-        if (bytes.length === 0) {
-            return;
-        }
-
-        if (bytes[0] === 1) {
-            this.handleSession(bytes);
-        } else if (bytes[0] === 2) {
-            this.handleFrame(bytes);
-        }
+        if (bytes.length === 0) return;
+        if (bytes[0] === 1) this.handleSession(bytes);
+        else if (bytes[0] === 2) this.handleFrame(bytes);
     }
 
     handleSession(bytes) {
@@ -183,6 +190,7 @@ class ScreenPreview {
     }
 
     stop() {
+        const deviceId = this.deviceId;
         this.root.classList.remove("is-streaming");
         if (this.decoder) {
             this.decoder.close();
@@ -193,6 +201,13 @@ class ScreenPreview {
             this.socket = null;
         }
         this.configData = null;
+
+        if (deviceId) {
+            fetch(`${SCREEN_STREAM_URL}/${encodeURIComponent(deviceId)}/screen/stop`, {
+                method: "POST",
+            }).catch(() => {});
+        }
+
         this.setStatus("Conectando");
     }
 }

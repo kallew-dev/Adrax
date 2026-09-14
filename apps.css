@@ -137,13 +137,21 @@
   border: 1px solid var(--border);
   border-radius: 12px;
   background: var(--bg-secondary);
-  transition: border-color .15s ease, transform .15s ease, background .15s ease;
+  cursor: pointer;
+  transition: border-color .15s ease, transform .15s ease, background .15s ease, opacity .15s ease;
 }
 
-.app-card:hover {
+.app-card:hover,
+.app-card:focus-visible {
   border-color: rgba(80, 250, 123, .45);
   background: var(--card-hover);
   transform: translateY(-1px);
+  outline: none;
+}
+
+.app-card.is-launching {
+  opacity: .55;
+  pointer-events: none;
 }
 
 .app-icon {

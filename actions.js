@@ -26,8 +26,12 @@ function configureActionButtons(deviceId) {
 }
 
 function selectDevice(deviceId, deviceName = deviceId) {
-    document.getElementById("selected-device-name").textContent = deviceName;
-    document.getElementById("selected-device-id").textContent = deviceId;
+    const selectedDeviceName = document.getElementById("selected-device-name");
+
+    if (selectedDeviceName) {
+        selectedDeviceName.textContent = deviceName;
+    }
+
     configureActionButtons(deviceId);
 }
 
@@ -59,7 +63,9 @@ function renderDevices(payload) {
             return "";
         }
 
-        const safeId = String(deviceId).replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+        const safeId = String(deviceId)
+            .replace(/&/g, "&amp;")
+            .replace(/"/g, "&quot;");
         const safeName = String(deviceName)
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")

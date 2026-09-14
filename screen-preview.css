@@ -1,0 +1,89 @@
+.live-preview[data-screen-preview] .preview-content {
+  align-items: stretch;
+}
+
+.mini-screen {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: #05070b;
+}
+
+#screen-preview {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  background: #05070b;
+}
+
+.screen-preview-placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  color: var(--text-secondary);
+  font-size: 11px;
+  text-align: center;
+  pointer-events: none;
+}
+
+[data-screen-preview].is-streaming .screen-preview-placeholder {
+  display: none;
+}
+
+[data-screen-preview].is-interactive #screen-preview {
+  pointer-events: auto;
+  cursor: crosshair;
+}
+
+[data-screen-preview].is-fullscreen {
+  position: fixed;
+  inset: 20px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  padding: 18px;
+  background: var(--card);
+}
+
+[data-screen-preview].is-fullscreen .preview-content {
+  min-height: 0;
+  flex: 1;
+}
+
+[data-screen-preview].is-fullscreen .mini-phone {
+  width: 100%;
+  height: 100%;
+}
+
+[data-screen-preview].is-fullscreen .mini-screen {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+}
+
+[data-screen-preview].is-fullscreen .preview-specs {
+  display: none;
+}
+
+[data-screen-preview].is-fullscreen .mini-notch {
+  display: none;
+}
+
+[data-screen-preview].is-fullscreen::after {
+  content: "Tela cheia · modo interativo";
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  padding: 7px 10px;
+  border: 1px solid rgba(80, 250, 123, .3);
+  border-radius: 8px;
+  background: rgba(5, 7, 11, .75);
+  color: var(--green);
+  font-size: 10px;
+  pointer-events: none;
+}

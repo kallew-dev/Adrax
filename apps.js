@@ -15,6 +15,11 @@ function escapeHtml(value) {
     .replace(/'/g, "&#039;");
 }
 
+function getAppName(packageName) {
+  const parts = packageName.split(".").filter(Boolean);
+  return parts.at(-1) || packageName;
+}
+
 function setEmptyState(title, description) {
   appsList.innerHTML = `
     <div class="empty-state">
@@ -66,15 +71,19 @@ function renderApps(payload) {
 
   appsCount.textContent = String(packages.length);
 
-  appsList.innerHTML = packages.map((packageName) => `
-    <article class="app-card">
-      <span class="app-icon">⊞</span>
-      <div class="app-info">
-        <strong>${escapeHtml(packageName)}</strong>
-        <small>Aplicativo Android</small>
-      </div>
-    </article>
-  `).join("");
+  appsList.innerHTML = packages.map((packageName) => {
+    const appName = getAppName(packageName);
+
+    return `
+      <article class="app-card">
+        <span class="app-icon">⊞</span>
+        <div class="app-info">
+          <strong>${escapeHtml(appName)}</strong>
+          <small>Aplicativo Android</small>
+        </div>
+      </article>
+    `;
+  }).join("");
 }
 
 async function loadDevices() {

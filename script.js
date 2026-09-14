@@ -10,28 +10,28 @@ function updateDeviceActions(deviceId) {
         .getElementById("action-lock")
         .setAttribute(
             "hx-post",
-            `${API_URL}/api/v1/clients/devices/${deviceId}/lock`
+            `${API_URL}/api/v1/devices/${deviceId}/lock`
         );
 
     document
         .getElementById("action-unlock")
         .setAttribute(
             "hx-post",
-            `${API_URL}/api/v1/clients/devices/${deviceId}/unlock`
+            `${API_URL}/api/v1/devices/${deviceId}/unlock`
         );
 
     document
         .getElementById("action-volume-down")
         .setAttribute(
             "hx-post",
-            `${API_URL}/api/v1/clients/devices/${deviceId}/volume/down`
+            `${API_URL}/api/v1/devices/${deviceId}/volume/down`
         );
 
     document
         .getElementById("action-volume-up")
         .setAttribute(
             "hx-post",
-            `${API_URL}/api/v1/clients/devices/${deviceId}/volume/up`
+            `${API_URL}/api/v1/devices/${deviceId}/volume/up`
         );
 
     document.querySelectorAll(".action-card").forEach((button) => {
@@ -41,7 +41,7 @@ function updateDeviceActions(deviceId) {
 
 async function loadConnectedDevice() {
     try {
-        const response = await fetch(`${API_URL}/api/v1/clients/devices`);
+        const response = await fetch(`${API_URL}/api/v1/devices`);
 
         if (!response.ok) {
             throw new Error(`Failed to load devices: HTTP ${response.status}`);

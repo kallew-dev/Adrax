@@ -30,25 +30,23 @@ function formatUptime(seconds) {
     const hours = Math.floor((total % 86400) / 3600);
     const minutes = Math.floor((total % 3600) / 60);
 
-    if (days > 0) {
-        return `${days}d ${hours}h ${minutes}m`;
-    }
-
-    if (hours > 0) {
-        return `${hours}h ${minutes}m`;
-    }
-
+    if (days > 0) return `${days}d ${hours}h ${minutes}m`;
+    if (hours > 0) return `${hours}h ${minutes}m`;
     return `${minutes}m`;
 }
 
 function formatMemory(megabytes) {
     const mb = Number(megabytes) || 0;
-
     if (mb >= 1024) {
         return `${(mb / 1024).toFixed(1).replace(".0", "")} GB RAM`;
     }
-
     return `${mb} MB RAM`;
+}
+
+function setText(element, value) {
+    if (element) {
+        element.textContent = value;
+    }
 }
 
 function updateDashboardDevice(device) {
@@ -67,30 +65,30 @@ function updateDashboardDevice(device) {
     const height = Number(device.resolution_height ?? 0);
     const resolution = width && height ? `${width} × ${height}` : "Desconhecida";
 
-    document.getElementById("device-overview-name")?.replaceChildren(document.createTextNode(name));
-    document.getElementById("device-overview-connection")?.replaceChildren(
-        document.createTextNode(`${deviceId} · Conectado`)
-    );
-    document.getElementById("device-overview-status")?.replaceChildren(document.createTextNode("Conectado"));
-    document.getElementById("device-overview-android")?.replaceChildren(document.createTextNode(android));
-    document.getElementById("device-overview-battery")?.replaceChildren(document.createTextNode(`${battery}%`));
-    document.getElementById("device-overview-cpu")?.replaceChildren(document.createTextNode(cpu));
-    document.getElementById("device-overview-memory")?.replaceChildren(document.createTextNode(memory));
-    document.getElementById("device-overview-resolution")?.replaceChildren(document.createTextNode(resolution));
-    document.getElementById("device-overview-uptime")?.replaceChildren(
-        document.createTextNode(formatUptime(device.uptime_seconds))
-    );
+    const overview = document.querySelector(".device-overview");
+    if (!overview) {
+        return;
+    }
+
+    const heading = overview.querySelector(".panel-header h2");
+    const connection = overview.querySelector(".panel-header p");
+    const status = overview.querySelector(".online-badge");
+    const specs = overview.querySelectorAll(".spec-list > div strong");
+
+    setText(heading, name);
+    setText(connection, `${deviceId} · Conectado`);
+    setText(status, "Conectado");
+    setText(specs[0], android);
+    setText(specs[1], `${battery}%`);
+    setText(specs[2], cpu);
+    setText(specs[3], memory);
+    setText(specs[4], resolution);
+    setText(specs[5], formatUptime(device.uptime_seconds));
 
     const topbarName = document.querySelector(".device-selector .device-name strong");
     const topbarId = document.querySelector(".device-selector .device-name small");
-
-    if (topbarName) {
-        topbarName.textContent = name;
-    }
-
-    if (topbarId) {
-        topbarId.textContent = deviceId;
-    }
+    setText(topbarName, name);
+    setText(topbarId, deviceId);
 
     updateDeviceActions(deviceId);
 }

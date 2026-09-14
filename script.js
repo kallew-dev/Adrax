@@ -96,6 +96,9 @@ function updateDashboardDevice(device) {
     setText(topbarId, deviceId);
 
     updateDeviceActions(deviceId);
+    document.dispatchEvent(new CustomEvent("adrax:device-selected", {
+        detail: { deviceId },
+    }));
 }
 
 function setActiveNavItem(target) {

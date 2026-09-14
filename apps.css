@@ -1,0 +1,213 @@
+.apps-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.apps-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 24px;
+}
+
+.apps-header h2 {
+  margin-top: 6px;
+  font-size: 24px;
+}
+
+.apps-header p {
+  margin-top: 8px;
+  color: var(--text-secondary);
+}
+
+.apps-controls {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  min-width: 360px;
+}
+
+.apps-controls label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.apps-controls select {
+  min-width: 240px;
+  height: 42px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-secondary);
+  color: var(--text);
+  outline: none;
+}
+
+.apps-controls select:focus {
+  border-color: var(--green);
+}
+
+.outline-button {
+  height: 42px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text);
+}
+
+.outline-button:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.apps-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.apps-count-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+
+.apps-count-icon {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 11px;
+  background: rgba(80, 250, 123, .10);
+  color: var(--green);
+  font-size: 21px;
+}
+
+.apps-count-card div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.apps-count-card span:not(.apps-count-icon) {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+
+.apps-count-card strong {
+  font-size: 22px;
+}
+
+.apps-device-status {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.apps-panel {
+  padding: 22px;
+}
+
+.apps-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.app-card {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-secondary);
+  transition: border-color .15s ease, transform .15s ease, background .15s ease;
+}
+
+.app-card:hover {
+  border-color: rgba(80, 250, 123, .45);
+  background: var(--card-hover);
+  transform: translateY(-1px);
+}
+
+.app-icon {
+  display: grid;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 11px;
+  background: rgba(80, 250, 123, .10);
+  color: var(--green);
+  font-size: 20px;
+}
+
+.app-info {
+  min-width: 0;
+}
+
+.app-info strong,
+.app-info small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-info strong {
+  color: var(--text);
+  font-size: 14px;
+}
+
+.app-info small {
+  margin-top: 4px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+@media (max-width: 900px) {
+  .apps-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .apps-controls {
+    min-width: 0;
+  }
+
+  .apps-controls select {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .apps-summary {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .apps-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .apps-controls select {
+    width: 100%;
+  }
+}

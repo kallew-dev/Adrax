@@ -14,6 +14,7 @@
 <body>
   <script src="https://unpkg.com/htmx.org@2.0.6"></script>
   <script src="script.js"></script>
+  <script src="screen-preview.js"></script>
 
   <input type="checkbox" id="theme-toggle" class="theme-toggle">
 
@@ -106,7 +107,29 @@
             <div id="action-status"></div>
           </article>
 
-          <article class="panel live-preview"><div class="panel-title-row"><div><span class="eyebrow">MONITORAMENTO</span><h2>Pré-visualização</h2></div><span class="live-badge"><i></i> Ao vivo</span></div><div class="preview-content"><div class="mini-phone"><div class="mini-notch"></div><div class="mini-screen"><div class="mini-time">10:42</div><div class="mini-weather">☀ 27°</div><div class="mini-wall"></div><div class="mini-dock"><span>☎</span><span>●</span><span>◉</span><span>▣</span></div></div></div><div class="preview-specs"><div><span>▣ Tela</span><strong>Ligada</strong></div><div><span>◫ Resolução</span><strong>—</strong></div><div><span>◉ Orientação</span><strong>Retrato</strong></div><div><span>⌗ DPI</span><strong>—</strong></div><div><span>◷ Taxa de atualização</span><strong>—</strong></div><button>⛶ Tela cheia</button></div></div></article>
+          <article class="panel live-preview" data-screen-preview>
+            <div class="panel-title-row">
+              <div><span class="eyebrow">MONITORAMENTO</span><h2>Pré-visualização</h2></div>
+              <span class="live-badge" data-stream-status><i></i> Ao vivo</span>
+            </div>
+            <div class="preview-content">
+              <div class="mini-phone">
+                <div class="mini-notch"></div>
+                <div class="mini-screen" data-screen-surface>
+                  <canvas id="screen-preview" aria-label="Pré-visualização ao vivo do dispositivo"></canvas>
+                  <div class="screen-preview-placeholder" data-screen-placeholder>Conectando ao dispositivo...</div>
+                </div>
+              </div>
+              <div class="preview-specs">
+                <div><span>▣ Tela</span><strong data-screen-state>Conectando</strong></div>
+                <div><span>◫ Resolução</span><strong data-screen-resolution>—</strong></div>
+                <div><span>◉ Orientação</span><strong data-screen-orientation>—</strong></div>
+                <div><span>⌗ DPI</span><strong>—</strong></div>
+                <div><span>◷ Taxa de atualização</span><strong data-screen-fps>—</strong></div>
+                <button type="button" data-screen-fullscreen>⛶ Tela cheia</button>
+              </div>
+            </div>
+          </article>
 
           <article class="panel devices-table" id="devices">
             <div class="panel-title-row"><div><span class="eyebrow">GERENCIAMENTO</span><h2>Dispositivos recentes</h2></div><button class="panel-link" type="button">Ver todos →</button></div>

@@ -26,47 +26,20 @@
       </div>
 
       <nav class="main-nav" aria-label="Navegação principal">
-        <a class="nav-item" href="index.html">
-          <span class="nav-icon">▦</span>
-          <span>Dashboard</span>
-        </a>
-        <a class="nav-item" href="#">
-          <span class="nav-icon">▯</span>
-          <span>Dispositivos</span>
-        </a>
-        <a class="nav-item" href="#">
-          <span class="nav-icon">⊞</span>
-          <span>Aplicativos</span>
-        </a>
-        <a class="nav-item" href="#">
-          <span class="nav-icon">□</span>
-          <span>Arquivos</span>
-        </a>
-        <a class="nav-item active" href="actions.html">
-          <span class="nav-icon">›_</span>
-          <span>Ações</span>
-        </a>
-        <a class="nav-item" href="#">
-          <span class="nav-icon">⚙</span>
-          <span>Automações</span>
-        </a>
-        <a class="nav-item" href="#">
-          <span class="nav-icon">▥</span>
-          <span>Relatórios</span>
-        </a>
-        <a class="nav-item" href="#">
-          <span class="nav-icon">◉</span>
-          <span>Configurações</span>
-        </a>
+        <a class="nav-item" href="index.html"><span class="nav-icon">▦</span><span>Dashboard</span></a>
+        <a class="nav-item" href="#"><span class="nav-icon">▯</span><span>Dispositivos</span></a>
+        <a class="nav-item" href="#"><span class="nav-icon">⊞</span><span>Aplicativos</span></a>
+        <a class="nav-item" href="#"><span class="nav-icon">□</span><span>Arquivos</span></a>
+        <a class="nav-item active" href="actions.html"><span class="nav-icon">›_</span><span>Ações</span></a>
+        <a class="nav-item" href="#"><span class="nav-icon">⚙</span><span>Automações</span></a>
+        <a class="nav-item" href="#"><span class="nav-icon">▥</span><span>Relatórios</span></a>
+        <a class="nav-item" href="#"><span class="nav-icon">◉</span><span>Configurações</span></a>
       </nav>
 
       <div class="sidebar-bottom">
         <div class="system-card">
           <span class="status-dot"></span>
-          <div>
-            <strong>Sistema operacional</strong>
-            <small>Todos os serviços ativos</small>
-          </div>
+          <div><strong>Sistema operacional</strong><small>Todos os serviços ativos</small></div>
           <span class="arrow">›</span>
         </div>
         <div class="version">ADRAX v1.0.0</div>
@@ -77,18 +50,10 @@
       <header class="topbar">
         <div class="topbar-title">
           <button class="mobile-menu" aria-label="Abrir menu">☰</button>
-          <div>
-            <h1>Ações</h1>
-            <p class="page-subtitle">Execute comandos diretamente nos seus dispositivos.</p>
-          </div>
+          <div><h1>Ações</h1><p class="page-subtitle">Execute comandos diretamente nos seus dispositivos.</p></div>
         </div>
-
         <div class="topbar-actions">
-          <label class="theme-switch" for="theme-toggle" title="Alternar tema">
-            <span class="sun">☀</span>
-            <span class="switch-track"><span></span></span>
-            <span class="moon">☾</span>
-          </label>
+          <label class="theme-switch" for="theme-toggle" title="Alternar tema"><span class="sun">☀</span><span class="switch-track"><span></span></span><span class="moon">☾</span></label>
           <button class="avatar">A</button>
         </div>
       </header>
@@ -112,8 +77,8 @@
               type="button"
               class="device-picker-button"
               hx-get="https://adrax.onrender.com/api/v1/devices"
-              hx-target="#device-list"
-              hx-swap="innerHTML"
+              hx-swap="none"
+              aria-label="Carregar dispositivos"
             >
               ▾
             </button>
@@ -123,41 +88,22 @@
         <section class="actions-list" aria-label="Ações disponíveis">
           <article class="action-row">
             <div class="action-row-icon lock">♙</div>
-            <div class="action-row-content">
-              <span class="action-row-label">SEGURANÇA</span>
-              <h3>Bloquear dispositivo</h3>
-              <p>Bloqueia imediatamente a tela do dispositivo selecionado.</p>
-            </div>
+            <div class="action-row-content"><span class="action-row-label">SEGURANÇA</span><h3>Bloquear dispositivo</h3><p>Bloqueia imediatamente a tela do dispositivo selecionado.</p></div>
             <button id="action-lock" class="play-button" type="button" hx-target="#action-status" hx-swap="innerHTML" disabled aria-label="Executar bloqueio">▶</button>
           </article>
-
           <article class="action-row">
             <div class="action-row-icon unlock">◉</div>
-            <div class="action-row-content">
-              <span class="action-row-label">SEGURANÇA</span>
-              <h3>Desbloquear dispositivo</h3>
-              <p>Desbloqueia o dispositivo selecionado.</p>
-            </div>
+            <div class="action-row-content"><span class="action-row-label">SEGURANÇA</span><h3>Desbloquear dispositivo</h3><p>Desbloqueia o dispositivo selecionado.</p></div>
             <button id="action-unlock" class="play-button" type="button" hx-target="#action-status" hx-swap="innerHTML" disabled aria-label="Executar desbloqueio">▶</button>
           </article>
-
           <article class="action-row">
             <div class="action-row-icon volume-down">🔉</div>
-            <div class="action-row-content">
-              <span class="action-row-label">ÁUDIO</span>
-              <h3>Diminuir volume</h3>
-              <p>Reduz o volume do dispositivo selecionado.</p>
-            </div>
+            <div class="action-row-content"><span class="action-row-label">ÁUDIO</span><h3>Diminuir volume</h3><p>Reduz o volume do dispositivo selecionado.</p></div>
             <button id="action-volume-down" class="play-button" type="button" hx-target="#action-status" hx-swap="innerHTML" disabled aria-label="Diminuir volume">▶</button>
           </article>
-
           <article class="action-row">
             <div class="action-row-icon volume-up">🔊</div>
-            <div class="action-row-content">
-              <span class="action-row-label">ÁUDIO</span>
-              <h3>Aumentar volume</h3>
-              <p>Aumenta o volume do dispositivo selecionado.</p>
-            </div>
+            <div class="action-row-content"><span class="action-row-label">ÁUDIO</span><h3>Aumentar volume</h3><p>Aumenta o volume do dispositivo selecionado.</p></div>
             <button id="action-volume-up" class="play-button" type="button" hx-target="#action-status" hx-swap="innerHTML" disabled aria-label="Aumentar volume">▶</button>
           </article>
         </section>
@@ -169,15 +115,7 @@
               <h2>Dispositivos</h2>
               <p>Selecione um dispositivo para definir o alvo das ações.</p>
             </div>
-            <button
-              class="outline-button"
-              type="button"
-              hx-get="https://adrax.onrender.com/api/v1/devices"
-              hx-target="#device-list"
-              hx-swap="innerHTML"
-            >
-              ↻ Atualizar
-            </button>
+            <button class="outline-button" type="button" hx-get="https://adrax.onrender.com/api/v1/devices" hx-swap="none">↻ Atualizar</button>
           </div>
 
           <div id="device-list" class="device-list">

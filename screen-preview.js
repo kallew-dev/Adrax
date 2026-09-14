@@ -4,7 +4,6 @@ class ScreenPreview {
     constructor(root) {
         this.root = root;
         this.canvas = root.querySelector("#screen-preview");
-        this.placeholder = root.querySelector("[data-screen-placeholder]");
         this.state = root.querySelector("[data-screen-state]");
         this.resolution = root.querySelector("[data-screen-resolution]");
         this.orientation = root.querySelector("[data-screen-orientation]");
@@ -42,8 +41,6 @@ class ScreenPreview {
         const url = `${SCREEN_STREAM_URL}/${encodeURIComponent(this.deviceId)}/screen/stream`;
         this.socket = new WebSocket(url);
         this.socket.binaryType = "arraybuffer";
-
-        this.socket.addEventListener("open", () => this.setStatus("Conectando"));
         this.socket.addEventListener("message", (event) => this.handleMessage(event.data));
         this.socket.addEventListener("close", () => {
             this.setStatus("Offline");
@@ -58,21 +55,15 @@ class ScreenPreview {
             return;
         }
 
-        const type = bytes[0];
-        if (type === 1) {
+        if (bytes[0] === 1) {
             this.handleSession(bytes);
-            return;
-        }
-
-        if (type === 2) {
+        } else if (bytes[0] === 2) {
             this.handleFrame(bytes);
         }
     }
 
     handleSession(bytes) {
-        if (bytes.length < 9) {
-            return;
-        }
+        if (bytes.length < 9) return;
 
         const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
         this.width = view.getUint32(1);
@@ -82,17 +73,16 @@ class ScreenPreview {
         this.resolution.textContent = `${this.width} × ${this.height}`;
         this.orientation.textContent = this.width >= this.height ? "Paisagem" : "Retrato";
 
-        if (this.decoder) {
-            this.decoder.close();
-        }
-
+        if (this.decoder) this.decoder.close();
         this.decoder = null;
         this.configData = null;
         this.setStatus("Aguardando vídeo");
     }
 
     handleFrame(bytes) {
-        if (bytes.length < 11 || !window.VideoDecoder) {
+        if (bytes.length < 11) return;
+        if (!window.VideoDecoder) {
+            this.setStatus("Seu navegador não suporta WebCodecs");
             return;
         }
 
@@ -110,15 +100,12 @@ class ScreenPreview {
 
         if (!this.decoder) {
             this.createDecoder(payload);
-            if (!this.decoder) {
-                return;
-            }
+            if (!this.decoder) return;
         }
 
-        let data = payload;
-        if (isKeyFrame && this.configData) {
-            data = concatUint8(this.configData, payload);
-        }
+        const data = isKeyFrame && this.configData
+            ? concatUint8(this.configData, payload)
+            : payload;
 
         try {
             this.decoder.decode(new EncodedVideoChunk({
@@ -146,13 +133,11 @@ class ScreenPreview {
                     this.setStatus("Erro no vídeo");
                 },
             });
-
             this.decoder.configure({
                 codec,
                 optimizeForLatency: true,
                 hardwareAcceleration: "prefer-hardware",
             });
-
             return this.decoder;
         } catch (error) {
             console.error("Failed to configure screen decoder:", error);
@@ -166,7 +151,6 @@ class ScreenPreview {
         const context = this.canvas.getContext("2d", { alpha: false });
         context.drawImage(frame, 0, 0, this.canvas.width, this.canvas.height);
         frame.close();
-
         this.root.classList.add("is-streaming");
         this.setStatus("Ao vivo");
         this.frames += 1;
@@ -180,30 +164,22 @@ class ScreenPreview {
     }
 
     async toggleFullscreen() {
-        const surface = this.root.querySelector("[data-screen-surface]");
-        if (!surface) {
-            return;
-        }
-
         if (document.fullscreenElement) {
             await document.exitFullscreen();
             return;
         }
-
-        await surface.requestFullscreen();
+        await this.root.requestFullscreen();
     }
 
     syncFullscreenState() {
-        const active = Boolean(document.fullscreenElement);
+        const active = document.fullscreenElement === this.root;
         this.root.classList.toggle("is-fullscreen", active);
         this.root.classList.toggle("is-interactive", active);
         this.fullscreen.textContent = active ? "⛶ Sair da tela cheia" : "⛶ Tela cheia";
     }
 
     setStatus(value) {
-        if (this.state) {
-            this.state.textContent = value;
-        }
+        if (this.state) this.state.textContent = value;
     }
 
     stop() {
@@ -230,9 +206,7 @@ function concatUint8(first, second) {
 
 function detectAvcCodec(data) {
     const sps = findNalUnit(data, 7);
-    if (!sps || sps.length < 4) {
-        return null;
-    }
+    if (!sps || sps.length < 4) return null;
 
     const profile = sps[1].toString(16).padStart(2, "0");
     const constraints = sps[2].toString(16).padStart(2, "0");
@@ -244,28 +218,23 @@ function findNalUnit(data, wantedType) {
     for (let i = 0; i + 4 < data.length; i += 1) {
         const fourByte = data[i] === 0 && data[i + 1] === 0 && data[i + 2] === 0 && data[i + 3] === 1;
         const threeByte = data[i] === 0 && data[i + 1] === 0 && data[i + 2] === 1;
-        if (!fourByte && !threeByte) {
-            continue;
-        }
+        if (!fourByte && !threeByte) continue;
 
         const offset = fourByte ? i + 4 : i + 3;
-        if ((data[offset] & 0x1f) === wantedType) {
-            let end = offset + 1;
-            while (end + 3 < data.length && !(data[end] === 0 && data[end + 1] === 0 && (data[end + 2] === 1 || (data[end + 2] === 0 && data[end + 3] === 1)))) {
-                end += 1;
-            }
-            return data.slice(offset, end);
-        }
-    }
+        if ((data[offset] & 0x1f) !== wantedType) continue;
 
+        let end = offset + 1;
+        while (end + 3 < data.length && !(data[end] === 0 && data[end + 1] === 0 && (data[end + 2] === 1 || (data[end + 2] === 0 && data[end + 3] === 1)))) {
+            end += 1;
+        }
+        return data.slice(offset, end);
+    }
     return null;
 }
 
 function initScreenPreview() {
     const root = document.querySelector("[data-screen-preview]");
-    if (!root) {
-        return;
-    }
+    if (!root) return;
 
     const preview = new ScreenPreview(root);
     window.adraxScreenPreview = preview;

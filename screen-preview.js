@@ -84,12 +84,16 @@ class ScreenPreview {
         const pts = Number(view.getBigUint64(2));
         const payload = bytes.slice(10);
         const isConfig = (flags & 1) !== 0;
-        const isKeyFrame = (flags & 2) !== 0;
+        const flaggedKeyFrame = (flags & 2) !== 0;
 
         if (isConfig) {
             this.configData = payload;
             return;
         }
+
+        // Keep the browser-side stream resilient to hardware encoders that
+        // emit an IDR NAL without setting the scrcpy key-frame flag.
+        const isKeyFrame = flaggedKeyFrame || containsH264Idr(payload);
 
         if (!this.decoder && !isKeyFrame) {
             return;
@@ -336,6 +340,10 @@ function findNalUnit(data, wantedType) {
     }
 
     return null;
+}
+
+function containsH264Idr(data) {
+    return findNalUnit(data, 5) !== null;
 }
 
 function initScreenPreview() {

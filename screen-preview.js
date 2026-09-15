@@ -84,6 +84,18 @@ class ScreenPreview {
         const payload = bytes.slice(10);
         const isConfig = (flags & 1) !== 0;
         const isKeyFrame = (flags & 2) !== 0;
+
+        console.log("[Adrax H264]", {
+            flags,
+            isConfig,
+            isKeyFrame,
+            payloadLength: payload.length,
+            configLength: this.configData?.length ?? 0,
+            payloadHead: Array.from(payload.slice(0, 32))
+                .map((byte) => byte.toString(16).padStart(2, "0"))
+                .join(" "),
+        });
+
         if (isConfig) {
             this.configData = payload;
             return;
@@ -106,6 +118,13 @@ class ScreenPreview {
 
     createDecoder(sample) {
         const codec = detectAvcCodec(sample);
+        console.log("[Adrax H264 codec]", {
+            codec,
+            sampleLength: sample.length,
+            sampleHead: Array.from(sample.slice(0, 32))
+                .map((byte) => byte.toString(16).padStart(2, "0"))
+                .join(" "),
+        });
         if (!codec) {
             this.setStatus("Codec H.264 não identificado");
             return null;

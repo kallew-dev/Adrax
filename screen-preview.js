@@ -88,11 +88,11 @@ class ScreenPreview {
             this.configData = payload;
             return;
         }
+        const data = isKeyFrame && this.configData ? concatUint8(this.configData, payload) : payload;
         if (!this.decoder) {
-            this.createDecoder(payload);
+            this.createDecoder(data);
             if (!this.decoder) return;
         }
-        const data = isKeyFrame && this.configData ? concatUint8(this.configData, payload) : payload;
         try {
             this.decoder.decode(new EncodedVideoChunk({
                 type: isKeyFrame ? "key" : "delta",

@@ -100,28 +100,35 @@ class ScreenPreview {
             this.configData = payload;
             return;
         }
-        const data = isKeyFrame && this.configData ? concatUint8(this.configData, payload) : payload;
+
+        // WebCodecs requires the first chunk after configure() to be a key frame.
+        // The scrcpy stream may start with delta frames, so wait for an IDR frame.
+        if (!this.decoder && !isKeyFrame) {
+            return;
+        }
+
         if (!this.decoder) {
-            this.createDecoder(data);
+            this.createDecoder(this.configData);
             if (!this.decoder) return;
         }
+
         try {
             this.decoder.decode(new EncodedVideoChunk({
                 type: isKeyFrame ? "key" : "delta",
                 timestamp: pts,
-                data,
+                data: payload,
             }));
         } catch (error) {
             console.error("Failed to decode scrcpy frame:", error);
         }
     }
 
-    createDecoder(sample) {
-        const codec = detectAvcCodec(sample);
+    createDecoder(config) {
+        const codec = detectAvcCodec(config);
         console.log("[Adrax H264 codec]", {
             codec,
-            sampleLength: sample.length,
-            sampleHead: Array.from(sample.slice(0, 32))
+            configLength: config?.length ?? 0,
+            configHead: Array.from(config?.slice(0, 32) ?? [])
                 .map((byte) => byte.toString(16).padStart(2, "0"))
                 .join(" "),
         });
@@ -134,6 +141,7 @@ class ScreenPreview {
                 output: (frame) => this.renderFrame(frame),
                 error: (error) => {
                     console.error("Screen decoder error:", error);
+                    this.decoder = null;
                     this.setStatus("Erro no vídeo");
                 },
             });
@@ -305,20 +313,12 @@ class ScreenPreview {
     }
 }
 
-function concatUint8(first, second) {
-    const result = new Uint8Array(first.length + second.length);
-    result.set(first, 0);
-    result.set(second, first.length);
-    return result;
-}
+function detectAvcCodec(config) {
+    if (!config) return null;
 
-function detectAvcCodec(data) {
-    if (data.length >= 4 && data[0] === 1) {
-        return `avc1.${data[1].toString(16).padStart(2, "0")}${data[2].toString(16).padStart(2, "0")}${data[3].toString(16).padStart(2, "0")}`;
-    }
-
-    const sps = findNalUnit(data, 7);
+    const sps = findNalUnit(config, 7);
     if (!sps || sps.length < 4) return null;
+
     const profile = sps[1].toString(16).padStart(2, "0");
     const constraints = sps[2].toString(16).padStart(2, "0");
     const level = sps[3].toString(16).padStart(2, "0");
@@ -326,21 +326,21 @@ function detectAvcCodec(data) {
 }
 
 function findNalUnit(data, wantedType) {
+    if (!data) return null;
+
     for (let i = 0; i + 3 < data.length; i += 1) {
         const fourByte = data[i] === 0 && data[i + 1] === 0 && data[i + 2] === 0 && data[i + 3] === 1;
         const threeByte = data[i] === 0 && data[i + 1] === 0 && data[i + 2] === 1;
         if (!fourByte && !threeByte) continue;
-        const offset = fourByte ? i + 4 : i + 3;
-        if (offset + 3 >= data.length || (data[offset] & 0x1f) !== wantedType) continue;
-        let end = offset + 1;
-        while (end + 3 < data.length && !(data[end] === 0 && data[end + 1] === 0 && (data[end + 2] === 1 || (data[end + 2] === 0 && data[end + 3] === 1)))) end += 1;
-        return data.slice(offset, end);
-    }
 
-    for (let i = 0; i + 3 < data.length; i += 1) {
-        if ((data[i] & 0x1f) === wantedType && (data[i] & 0x80) === 0) {
-            return data.slice(i, Math.min(i + 4, data.length));
+        const offset = fourByte ? i + 4 : i + 3;
+        if (offset >= data.length || (data[offset] & 0x1f) !== wantedType) continue;
+
+        let end = offset + 1;
+        while (end + 3 < data.length && !(data[end] === 0 && data[end + 1] === 0 && (data[end + 2] === 1 || (data[end + 2] === 0 && data[end + 3] === 1)))) {
+            end += 1;
         }
+        return data.slice(offset, end);
     }
 
     return null;

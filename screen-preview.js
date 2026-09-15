@@ -78,6 +78,7 @@ class ScreenPreview {
             this.setStatus("Seu navegador não suporta WebCodecs");
             return;
         }
+
         const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
         const flags = view.getUint8(1);
         const pts = Number(view.getBigUint64(2));
@@ -85,24 +86,11 @@ class ScreenPreview {
         const isConfig = (flags & 1) !== 0;
         const isKeyFrame = (flags & 2) !== 0;
 
-        console.log("[Adrax H264]", {
-            flags,
-            isConfig,
-            isKeyFrame,
-            payloadLength: payload.length,
-            configLength: this.configData?.length ?? 0,
-            payloadHead: Array.from(payload.slice(0, 32))
-                .map((byte) => byte.toString(16).padStart(2, "0"))
-                .join(" "),
-        });
-
         if (isConfig) {
             this.configData = payload;
             return;
         }
 
-        // WebCodecs requires the first chunk after configure() to be a key frame.
-        // The scrcpy stream may start with delta frames, so wait for an IDR frame.
         if (!this.decoder && !isKeyFrame) {
             return;
         }
@@ -110,6 +98,12 @@ class ScreenPreview {
         if (!this.decoder) {
             this.createDecoder(this.configData);
             if (!this.decoder) return;
+        }
+
+        // Avoid building an unbounded decoder queue when the browser cannot keep
+        // up with the device frame rate. Keep keyframes and drop only delta frames.
+        if (!isKeyFrame && this.decoder.decodeQueueSize > 3) {
+            return;
         }
 
         try {
@@ -125,17 +119,11 @@ class ScreenPreview {
 
     createDecoder(config) {
         const codec = detectAvcCodec(config);
-        console.log("[Adrax H264 codec]", {
-            codec,
-            configLength: config?.length ?? 0,
-            configHead: Array.from(config?.slice(0, 32) ?? [])
-                .map((byte) => byte.toString(16).padStart(2, "0"))
-                .join(" "),
-        });
         if (!codec) {
             this.setStatus("Codec H.264 não identificado");
             return null;
         }
+
         try {
             this.decoder = new VideoDecoder({
                 output: (frame) => this.renderFrame(frame),
@@ -145,7 +133,11 @@ class ScreenPreview {
                     this.setStatus("Erro no vídeo");
                 },
             });
-            this.decoder.configure({ codec, optimizeForLatency: true, hardwareAcceleration: "prefer-hardware" });
+            this.decoder.configure({
+                codec,
+                optimizeForLatency: true,
+                hardwareAcceleration: "prefer-hardware",
+            });
             return this.decoder;
         } catch (error) {
             console.error("Failed to configure screen decoder:", error);

@@ -294,6 +294,10 @@ function concatUint8(first, second) {
 }
 
 function detectAvcCodec(data) {
+    if (data.length >= 4 && data[0] === 1) {
+        return `avc1.${data[1].toString(16).padStart(2, "0")}${data[2].toString(16).padStart(2, "0")}${data[3].toString(16).padStart(2, "0")}`;
+    }
+
     const sps = findNalUnit(data, 7);
     if (!sps || sps.length < 4) return null;
     const profile = sps[1].toString(16).padStart(2, "0");
@@ -303,16 +307,23 @@ function detectAvcCodec(data) {
 }
 
 function findNalUnit(data, wantedType) {
-    for (let i = 0; i + 4 < data.length; i += 1) {
+    for (let i = 0; i + 3 < data.length; i += 1) {
         const fourByte = data[i] === 0 && data[i + 1] === 0 && data[i + 2] === 0 && data[i + 3] === 1;
         const threeByte = data[i] === 0 && data[i + 1] === 0 && data[i + 2] === 1;
         if (!fourByte && !threeByte) continue;
         const offset = fourByte ? i + 4 : i + 3;
-        if ((data[offset] & 0x1f) !== wantedType) continue;
+        if (offset + 3 >= data.length || (data[offset] & 0x1f) !== wantedType) continue;
         let end = offset + 1;
         while (end + 3 < data.length && !(data[end] === 0 && data[end + 1] === 0 && (data[end + 2] === 1 || (data[end + 2] === 0 && data[end + 3] === 1)))) end += 1;
         return data.slice(offset, end);
     }
+
+    for (let i = 0; i + 3 < data.length; i += 1) {
+        if ((data[i] & 0x1f) === wantedType && (data[i] & 0x80) === 0) {
+            return data.slice(i, Math.min(i + 4, data.length));
+        }
+    }
+
     return null;
 }
 
